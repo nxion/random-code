@@ -1,0 +1,26 @@
+#!/bin/sh
+####################################################################################################
+#
+# ABOUT
+#
+#   Check to see if there is at least 10 GB of freespace. Modified for Casper.
+#   Used as an extension attrubuite.
+#
+####################################################################################################
+#
+# HISTORY
+#
+#   Version 1.0
+#
+####################################################################################################
+
+# Variables
+requiredSpace="10"            # Available Space Required (in GBs)
+availableSpace=$(/usr/sbin/diskutil info / | grep "Volume Free Space:" | awk '{print $6}')
+availableSpaceInt=$(/bin/echo "($availableSpace)/1000000000" | bc)
+
+if [ "$availableSpaceInt" -lt "$requiredSpace" ]; then
+  echo "<result>no</result>"
+else
+  echo "<result>yes</result>"
+fi

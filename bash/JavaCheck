@@ -1,0 +1,26 @@
+#!/bin/bash
+####################################################################################################
+#
+# ABOUT
+#
+#   This script was used to address a issue that was introduced in Mac OSX
+#   10.10.4. Apple change the way you could check what version od Java is
+#   Installed
+#
+####################################################################################################
+#
+# HISTORY
+#
+#   Version 1.0
+#
+####################################################################################################
+sysJava="/System/Library/Java/JavaVirtualMachines"
+libJava="/Library/Java/JavaVirtualMachines/"
+
+if [ "$(ls -A $sysJava)" -o "$(ls -A $libJava)" ]; then
+  java -version &> /tmp/javaVersion.txt
+  javaVer=$(cat /var/tmp/javaVersion.txt | grep "SE Runtime Environment" | cut -f3 -d'('  | cut -f1 -d')' | awk '{ print $2 }')
+  echo "<result>$javaVer</result>"
+else
+  echo "<result>NONE</result>"
+fi

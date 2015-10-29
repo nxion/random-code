@@ -1,0 +1,43 @@
+#!/bin/bash
+####################################################################################################
+#
+# ABOUT
+#
+#   Check Free Space: Leverages JSS Parameter 4 to verify there is enough
+#   available disk space before continuing with the policy. If there is
+#   not enough free disk space, a message is displayed to the end-user
+#   and Self Service is forcibly quit.
+#
+####################################################################################################
+#
+# HISTORY
+#
+#   Version 1.0
+#
+####################################################################################################
+# Logging
+logFile="/var/log/spaceTest.log"
+####################################################################################################
+# Variables
+requiredSpace="10"            # Available Space Required (in GBs)
+availableSpace=$(/usr/sbin/diskutil info / | grep "Volume Free Space:" | awk '{print $4}')
+availableSpaceInt=$(/bin/echo "($availableSpace+0.5)/1" | bc)
+#totalSpace=$(/usr/sbin/diskutil info / | grep "Total Size:" | awk '{print $3}')
+/bin/echo "*** Check Free Space ***" >> $logFile
+/bin/echo "Required Space: $requiredSpace" >> $logFile
+/bin/echo "Available Space: $availableSpaceInt" >> $logFile
+
+if [ "$availableSpaceInt" -lt "$requiredSpace" ]; then
+    /usr/sbin/jamf displayMessage -message "Insufficient Free Space Available
+
+This installation requires $requiredSpace GB.
+There is $availableSpace GB available.
+
+"
+
+else
+    /bin/echo "There is enough free space available" >> $logFile
+fi
+
+
+exit 0      ## Success
